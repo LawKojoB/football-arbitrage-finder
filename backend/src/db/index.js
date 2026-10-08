@@ -1,17 +1,32 @@
-// Thin wrapper around better-sqlite3.
-// We use better-sqlite3 because it's synchronous (no callback/await spaghetti)
-// and ships with a single file — easy to reason about for an MVP.
+// Thin wrapper around Node's built-in SQLite module (node:sqlite).
+// It's synchronous (no callback/await spaghetti) and needs no native
+// compilation, so `npm install` works on any machine with Node 22.5+.
 
-const Database = require('better-sqlite3');
+const { DatabaseSync } = require('node:sqlite');
 const fs = require('fs');
 const path = require('path');
 
 const DB_PATH = path.join(__dirname, '..', '..', 'data.sqlite');
 const SCHEMA_PATH = path.join(__dirname, 'schema.sql');
 
-const db = new Database(DB_PATH);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+const db = new DatabaseSync(DB_PATH);
+db.exec('PRAGMA journal_mode = WAL');
+db.exec('PRAGMA foreign_keys = ON');
+
+// Run fn inside a single transaction: all writes land together or none do.
+function transaction(fn) {
+  return (...args) => {
+    db.exec('BEGIN');
+    try {
+      const result = fn(...args);
+      db.exec('COMMIT');
+      return result;
+    } catch (err) {
+      db.exec('ROLLBACK');
+      throw err;
+    }
+  };
+}
 
 // Run schema on every boot — every statement is idempotent ("IF NOT EXISTS").
 const schema = fs.readFileSync(SCHEMA_PATH, 'utf8');
@@ -37,7 +52,7 @@ const insertOdds = db.prepare(`
   VALUES (@match_id, @bookmaker_key, @bookmaker_name, @home_odds, @draw_odds, @away_odds, @fetched_at)
 `);
 
-const saveMatchWithOdds = db.transaction((match) => {
+const saveMatchWithOdds = transaction((match) => {
   upsertMatch.run({
     id: match.id,
     league: match.league,

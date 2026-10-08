@@ -36,7 +36,7 @@ arb-finder/
 │   │   │   ├── arbService.js     # enriches matches with best odds + arb info
 │   │   │   └── mockOdds.js       # realistic seed data with intentional arbs
 │   │   └── db/
-│   │       ├── index.js          # better-sqlite3 wrapper
+│   │       ├── index.js          # SQLite wrapper (built-in node:sqlite)
 │   │       └── schema.sql        # tables, indexes
 │   ├── package.json
 │   └── .env.example
@@ -56,7 +56,7 @@ arb-finder/
 
 ## Quick start (5 commands)
 
-You need Node.js ≥ 18 and npm.
+You need Node.js ≥ 22.13 and npm. The backend uses Node's built-in `node:sqlite` module, so there is no native database driver to compile.
 
 ```bash
 # 1. Backend
@@ -255,7 +255,7 @@ Serve `frontend/dist/` from any static host. Set `VITE_API_BASE=https://your-bac
 
 ## Troubleshooting
 
-- **`better-sqlite3` install fails** — it's a native module. Make sure you have Python and a C++ compiler installed (Node.js usually bundles `node-gyp`). On Windows, `npm install --global windows-build-tools` (run as admin) can help. On Linux, `sudo apt install build-essential python3`.
+- **`node:sqlite` not found** — your Node.js is too old. Install the current LTS from nodejs.org (22.13 or newer) and run `node -v` to confirm. You may see an "SQLite is an experimental feature" warning on some Node versions; it's harmless.
 - **CORS errors in the browser** — make sure both servers are running and that you're hitting the Vite dev server at `:5173`, not the backend directly at `:4000`. The Vite proxy in `vite.config.js` forwards `/api/*` for you.
 - **Zero arbitrages forever** — that's the honest case in live data; arbs are rare and short-lived. Either lower the `Min profit %` filter to `0`, or set `USE_MOCK_DATA=true` to see what a populated dashboard looks like.
 
