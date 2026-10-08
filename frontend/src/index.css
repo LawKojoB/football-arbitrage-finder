@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body, #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-ink-900 text-slate-200 font-display antialiased;
+    background-image:
+      radial-gradient(ellipse at 20% -10%, rgba(34, 211, 154, 0.08), transparent 50%),
+      radial-gradient(ellipse at 90% 10%, rgba(255, 94, 98, 0.05), transparent 50%);
+    background-attachment: fixed;
+  }
+  /* Slimmer scrollbars to fit the dark aesthetic */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2a3340; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3b4655; }
+}
+
+@layer components {
+  .card {
+    @apply rounded-xl border border-ink-500/60 bg-ink-700/60 backdrop-blur-sm;
+  }
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-ink-500 bg-ink-600/60 px-2.5 py-0.5 text-xs font-medium;
+  }
+  .stat-num {
+    @apply font-mono font-semibold tabular-nums;
+  }
+  .arb-row-highlight {
+    background: linear-gradient(90deg, rgba(34, 211, 154, 0.10), rgba(34, 211, 154, 0.02));
+    box-shadow: inset 3px 0 0 #22d39a;
+  }
+}
