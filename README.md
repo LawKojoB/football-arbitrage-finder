@@ -4,6 +4,11 @@ A lightweight full-stack app that pulls football (soccer) odds from multiple boo
 
 > ⚠️ **For educational use.** Arbitrage betting carries real-world risks the math doesn't capture (limited stakes, voided bets, account restrictions, currency conversion, rule differences between books). Treat this as a learning project.
 
+## How I built this
+
+I wrote a detailed specification for this app (stack, data structures, API endpoints, arbitrage formula, stake allocation, filters and refresh behaviour), then used an AI coding agent to build it against that spec. I ran and tested it locally and worked through the code to understand how the backend refresh loop, the SQLite layer and the React dashboard fit together.
+
+![Dashboard screenshot](docs/screenshot.png)
 ## Features
 
 - Auto-refreshing odds dashboard (every 30s)
